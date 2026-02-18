@@ -109,8 +109,7 @@
                 type: "quiz", id: "q1",
                 question: "The 'Harmless' Joke",
                 scenario: "During a staff meeting, a new teacher suggests an idea. Two senior teachers look at each other, roll their eyes, and stifle a laugh. Later, they say, 'We were just joking.'",
-                //imagePlaceholder: "Image: Two teachers whispering/laughing at a meeting",
-                imageUrl: "https://github.com/bmns1/training/blob/446b17b6343a90f4b64631ee422b257b0b0ee9c2/q1.png?raw=true";
+                imagePlaceholder: "Image: Two teachers whispering/laughing at a meeting",
                 options: [ { text: "It is fine as long as they clarify it was a joke later.", correct: false }, { text: "This is passive-aggressive bullying and unacceptable.", correct: true } ],
                 explanation: "<strong>Correct.</strong> Jokes targeting specific people undermine safety. <br><em>Quran (49:11):</em> 'Let not a people ridicule [another] people; perhaps they may be better than them.'"
             },
@@ -355,16 +354,10 @@ function handleCredentialResponse(response) {
                 
                 <h2 class="text-xl font-bold text-slate-900 mb-2">${data.question}</h2>
                 
-               
-
-                ${data.imageUrl ? 
-    `<img src="${data.imageUrl}" class="w-full h-64 object-cover rounded-lg mb-6 border border-slate-200 shadow-sm" alt="Scenario Image">` 
-    : 
-    `<div class="img-placeholder">
-        <svg class="w-10 h-10 mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        <span>${data.imagePlaceholder || "No image available"}</span>
-    </div>`
-}
+                <div class="img-placeholder">
+                    <svg class="w-10 h-10 mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span>${data.imagePlaceholder}</span>
+                </div>
 
                 <p class="text-slate-800 text-lg mb-6 font-medium italic border-l-4 border-slate-300 pl-4 py-2 bg-slate-50 rounded-r">
                     "${data.scenario}"
@@ -484,4 +477,3 @@ function handleCredentialResponse(response) {
 
     </body>
 </html>
-
