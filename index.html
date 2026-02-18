@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVA Staff Training: Professionalism & Adab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Professional Image Placeholder */
+        .img-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s;
+        }
+        .img-placeholder:hover { border-color: #94a3b8; background-color: #e2e8f0; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+    <div id="view-login" class="fixed inset-0 z-50 bg-slate-900 flex flex-col items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center border-t-4 border-teal-600">
+            <div class="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-800 mb-2">SVA Staff Training</h1>
+            <p class="text-slate-500 mb-8 text-sm">Module: Workplace Respect & Islamic Adab</p>
+            
+            <div id="g_id_onload"
+                 data-client_id="14216824305-v19ecsmrhk1muaglrlhjceqjk5oeqr4n.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_select="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="center"></div>
+        </div>
+    </div>
+
+    <div id="view-app" class="hidden min-h-screen max-w-3xl mx-auto p-4 sm:p-8">
+        
+        <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div>
+                <h1 class="text-lg font-bold text-teal-800">Professional Development</h1>
+                <p class="text-xs text-slate-500" id="user-display">Verifying user...</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Score</div>
+                <div class="text-xl font-bold text-teal-600" id="score-display">0</div>
+            </div>
+        </header>
+
+        <div id="content-card" class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 sm:p-8 fade-in relative overflow-hidden">
+            <div class="flex items-center justify-center h-40 text-slate-400">Loading curriculum...</div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+        const BACKEND_URL = "YOUR_APPS_SCRIPT_URL_HERE"; // <--- PASTE YOUR BACKEND URL HERE
+        
+        // State Variables
+        let USER_EMAIL = "";
+        let currentStep = 0;
+        let score = 0;
+
+        // ==========================================
+        // THE 20-QUESTION CURRICULUM
+        // ==========================================
+        const CURRICULUM = [
+            {
+                type: "intro",
+                title: "Welcome to Workplace Adab",
+                body: `
+                    <p class="mb-4 text-lg">As educators at SVA, we hold ourselves to the highest standards of professionalism and Islamic etiquette. This training addresses recent observations regarding staff conduct.</p>
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-4 mb-4 text-sm text-teal-800">
+                        <strong>Goal:</strong> To foster an environment of <em>Rahmah</em> (Mercy), <em>Adl</em> (Justice), and mutual respect, free from toxicity and gossip.
+                    </div>
+                    <p class="mb-6">The training consists of <strong>20 scenarios</strong> based on real-world interactions. You must select the correct professional and Islamic response.</p>
+                `,
+                btnText: "Begin Assessment"
+            },
+            // --- MODULE 1: Mocking & Respect ---
+            {
+                type: "quiz", id: "q1",
+                question: "The 'Harmless' Joke",
+                scenario: "During a staff meeting, a new teacher suggests an idea. Two senior teachers look at each other, roll their eyes, and stifle a laugh. Later, they say, 'We were just joking.'",
+                imagePlaceholder: "Image: Two teachers whispering/laughing at a meeting",
+                options: [ { text: "It is fine as long as they clarify it was a joke later.", correct: false }, { text: "This is passive-aggressive bullying and unacceptable.", correct: true } ],
+                explanation: "<strong>Correct.</strong> Jokes targeting specific people undermine safety. <br><em>Quran (49:11):</em> 'Let not a people ridicule [another] people; perhaps they may be better than them.'"
+            },
+            {
+                type: "quiz", id: "q2",
+                question: "The Mimic",
+                scenario: "In the breakroom, a teacher mimics the accent and laugh of another colleague who isn't present, making the group laugh.",
+                imagePlaceholder: "Image: A person mimicking another while group laughs",
+                options: [ { text: "Do not laugh. Politely change the subject or leave.", correct: true }, { text: "Laugh along to not make it awkward.", correct: false } ],
+                explanation: "<strong>Correct.</strong> Mimicry is a form of <em>Gheebah</em> (Backbiting) and mockery (Al-Humazah). 'Woe to every scorner and mocker.'"
+            },
+            {
+                type: "quiz", id: "q3",
+                question: "Sarcastic Retorts",
+                scenario: "A teacher asks a clarifying question in the WhatsApp group. Another teacher replies: 'Wow, I thought everyone knew that by now. 🙄'",
+                imagePlaceholder: "Image: Phone screen showing a sarcastic message",
+                options: [ { text: "This demonstrates arrogance (Kibr) and discourages communication.", correct: true }, { text: "It is a valid way to ensure people pay attention.", correct: false } ],
+                explanation: "<strong>Correct.</strong> 'He who has an atom's weight of arrogance in his heart will not enter Paradise.' (Muslim)"
+            },
+            {
+                type: "quiz", id: "q4",
+                question: "The 'Sensitive' Colleague",
+                scenario: "You make a sharp comment to a colleague, and they look upset. You think, 'They are just being too sensitive.' Who is responsible?",
+                imagePlaceholder: "Image: One person looking upset, another looking dismissive",
+                options: [ { text: "The colleague needs to toughen up.", correct: false }, { text: "You are. Professionalism requires emotional intelligence.", correct: true } ],
+                explanation: "<strong>Correct.</strong> The Prophet (ﷺ) was 'soft and gentle' (<em>Layyin</em>). Impact matters more than intent."
+            },
+            {
+                type: "quiz", id: "q5",
+                question: "Public Correction",
+                scenario: "A teacher makes a mistake in the lunch line. Another teacher loudly corrects them in front of students: 'That's not how we do things here!'",
+                imagePlaceholder: "Image: Teacher yelling at another teacher in cafeteria",
+                options: [ { text: "This humiliates the teacher and erodes student respect.", correct: true }, { text: "It is important to correct mistakes immediately.", correct: false } ],
+                explanation: "<strong>Correct.</strong> <em>Naseehah</em> (Advice) must be given in private. Public correction is often humiliation."
+            },
+            // --- MODULE 2: Cliques & Inclusion ---
+            {
+                type: "quiz", id: "q6",
+                question: "The Senior Table",
+                scenario: "A group of teachers have eaten lunch together for years. When a new hire asks to join, they say, 'Sorry, we're saving these seats for the usual crew.'",
+                imagePlaceholder: "Image: A full lunch table and one person standing with a tray",
+                options: [ { text: "This is exclusionary and creates a hostile environment.", correct: true }, { text: "They have a right to eat with their friends.", correct: false } ],
+                explanation: "<strong>Correct.</strong> The Prophet (ﷺ) forbade excluding others in conversation as it causes sadness."
+            },
+            {
+                type: "quiz", id: "q7",
+                question: "The Secret Chat",
+                scenario: "Teachers create a separate WhatsApp group specifically to complain about administration and other teachers.",
+                imagePlaceholder: "Image: Phone screen showing 'Complaint Group' chat",
+                options: [ { text: "It's a healthy way to vent stress.", correct: false }, { text: "It breeds toxicity and negativity.", correct: true } ],
+                explanation: "<strong>Correct.</strong> <em>Najwa</em> (Secret Counsel) regarding sin and aggression is forbidden (Surah Al-Mujadila 58:9)."
+            },
+            {
+                type: "quiz", id: "q8",
+                question: "Language Barriers",
+                scenario: "Three teachers speak a language that the fourth teacher in the room does not understand, laughing frequently.",
+                imagePlaceholder: "Image: Three people talking, one person looking confused",
+                options: [ { text: "This alienates the non-speaker and hurts team unity.", correct: true }, { text: "It's fine, it's their native language.", correct: false } ],
+                explanation: "<strong>Correct.</strong> Speak in a way everyone understands to maintain <em>Ukhuwah</em> (Brotherhood)."
+            },
+            {
+                type: "quiz", id: "q9",
+                question: "The 'Newbie' Treatment",
+                scenario: "A senior teacher ignores a new teacher's greeting in the hallway for the first week to 'show them their place.'",
+                imagePlaceholder: "Image: One person waving, another walking past ignoring them",
+                options: [ { text: "This is forbidden. Returning Salam is a right (Haqq).", correct: true }, { text: "New teachers need to earn respect first.", correct: false } ],
+                explanation: "<strong>Correct.</strong> 'The best of you is the one who initiates the Salam.'"
+            },
+            {
+                type: "quiz", id: "q10",
+                question: "Gatekeeping Resources",
+                scenario: "A teacher refuses to share lesson plans with a struggling new teacher, saying, 'I had to work hard for these, so should they.'",
+                imagePlaceholder: "Image: Teacher hiding a folder of papers",
+                options: [ { text: "This encourages hard work.", correct: false }, { text: "This is unprofessional. Education is collaborative.", correct: true } ],
+                explanation: "<strong>Correct.</strong> 'None of you truly believes until he loves for his brother what he loves for himself.'"
+            },
+            // --- MODULE 3: Authority & Tasks ---
+            {
+                type: "quiz", id: "q11",
+                question: "The 'Favor'",
+                scenario: "A veteran teacher tells a junior: 'Since you're new and need to make a good impression, you should cover my recess duty while I leave early.'",
+                imagePlaceholder: "Image: Senior teacher checking watch and leaving",
+                options: [ { text: "This is exploitation and abuse of power.", correct: true }, { text: "This is standard mentorship.", correct: false } ],
+                explanation: "<strong>Correct.</strong> Using seniority to offload unwanted tasks is <em>Dhulm</em> (Oppression). We are accountable for our own duties."
+            },
+            {
+                type: "quiz", id: "q12",
+                question: "The Guilt Trip",
+                scenario: "A teacher declines a task that isn't their job. The requester says, 'Wow, I thought you cared about the school. I guess not.'",
+                imagePlaceholder: "Image: One person looking guilty, another looking angry",
+                options: [ { text: "This is gaslighting and emotional manipulation.", correct: true }, { text: "They are right, we should do everything for the school.", correct: false } ],
+                explanation: "<strong>Correct.</strong> Speaking the truth and respecting boundaries is superior to manipulation."
+            },
+            {
+                type: "quiz", id: "q13",
+                question: "Unassigned Tasks",
+                scenario: "You see a mess in the hallway. You think, 'The janitor or the new teacher will get it,' and walk past.",
+                imagePlaceholder: "Image: Trash on the floor in a hallway",
+                options: [ { text: "It's not my job description.", correct: false }, { text: "The proactive response is to clean it (Imatat al-adha).", correct: true } ],
+                explanation: "<strong>Correct.</strong> Service to the community is a form of leadership."
+            },
+            {
+                type: "quiz", id: "q14",
+                question: "The 'Expert'",
+                scenario: "A teacher consistently interrupts others in meetings, saying, 'I've been here longer, so I know better,' silencing new ideas.",
+                imagePlaceholder: "Image: Person interrupting someone speaking at a whiteboard",
+                options: [ { text: "This causes stagnation and kills innovation.", correct: true }, { text: "Experience should always override new ideas.", correct: false } ],
+                explanation: "<strong>Correct.</strong> <em>Shura</em> (Consultation) requires listening to all voices."
+            },
+            {
+                type: "quiz", id: "q15",
+                question: "Refusing to Help",
+                scenario: "A teacher is visibly overwhelmed carrying supplies. Another teacher sits watching on their phone.",
+                imagePlaceholder: "Image: Person struggling with boxes, another on phone",
+                options: [ { text: "It's not my problem.", correct: false }, { text: "Basic decency requires offering help.", correct: true } ],
+                explanation: "<strong>Correct.</strong> 'Allah helps His slave as long as the slave helps his brother.'"
+            },
+            // --- MODULE 4: Integrity ---
+            {
+                type: "quiz", id: "q16",
+                question: "The Parent Vent",
+                scenario: "A parent complains about Ms. A. You reply, 'I know, Ms. A is always late and disorganized. We're trying to fix it.'",
+                imagePlaceholder: "Image: Teacher nodding and talking to a parent",
+                options: [ { text: "It validates the parent's feelings.", correct: false }, { text: "It destroys a colleague's reputation.", correct: true } ],
+                explanation: "<strong>Correct.</strong> Defending the honor of your colleague in their absence is a duty."
+            },
+            {
+                type: "quiz", id: "q17",
+                question: "The 'Concerned' Gossip",
+                scenario: "'I'm telling you this just so you can make Dua for her, but did you hear that Teacher X is getting divorced?'",
+                imagePlaceholder: "Image: Two people whispering with 'prayer hands'",
+                options: [ { text: "This is gossip disguised as piety.", correct: true }, { text: "It is good to ask for Dua.", correct: false } ],
+                explanation: "<strong>Correct.</strong> <em>Satr</em> (Concealing faults) is required. Personal matters remain private unless there is a clear benefit to sharing."
+            },
+            {
+                type: "quiz", id: "q18",
+                question: "Undermining Authority",
+                scenario: "A teacher tells a student, 'I would let you go to recess, but Mr. Y is being mean today and said no.'",
+                imagePlaceholder: "Image: Teacher talking to student, pointing at another teacher",
+                options: [ { text: "This triangulates the student against the teacher.", correct: true }, { text: "It builds rapport with the student.", correct: false } ],
+                explanation: "<strong>Correct.</strong> Unity of command and respect for leadership are essential for <em>Nizam</em> (Order)."
+            },
+            {
+                type: "quiz", id: "q19",
+                question: "Taking Credit",
+                scenario: "A team works on a project, but one teacher presents it to the Board as entirely their own idea.",
+                imagePlaceholder: "Image: Person presenting alone while team looks sad",
+                options: [ { text: "This is plagiarism and dishonesty.", correct: true }, { text: "That is just good marketing.", correct: false } ],
+                explanation: "<strong>Correct.</strong> 'He who claims what is not his is not of us.' (Muslim)"
+            },
+            {
+                type: "quiz", id: "q20",
+                question: "Final Reflection",
+                scenario: "You witness a colleague being mocked. You stay silent to avoid conflict. Are you blameless?",
+                imagePlaceholder: "Image: Person witnessing bullying and looking away",
+                options: [ { text: "Yes, I didn't say anything.", correct: false }, { text: "No, silence enables the oppressor.", correct: true } ],
+                explanation: "<strong>Correct.</strong> 'Help your brother, whether he is an oppressor (by stopping him) or is being oppressed.'"
+            },
+            {
+                type: "end",
+                title: "Training Complete",
+                body: `
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h3 class="text-2xl font-bold text-teal-700 mb-2">JazakAllah Khair!</h3>
+                        <p class="mb-6">You have completed the Workplace Adab module.</p>
+                        <p class="text-sm text-slate-500 mb-6">Your responses have been recorded in the staff database.</p>
+                    </div>
+                `,
+                btnText: "Log Out"
+            }
+        ];
+
+        // ==========================================
+        // APP LOGIC
+        // ==========================================
+
+        // 1. Google Auth Handler
+        function handleCredentialResponse(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            USER_EMAIL = payload.email;
+            
+            // Switch Views
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-app').classList.remove('hidden');
+            document.getElementById('user-display').innerText = USER_EMAIL;
+            
+            renderStep();
+        }
+
+        // 2. Render Engine
+        function renderStep() {
+            const container = document.getElementById('content-card');
+            const data = CURRICULUM[currentStep];
+            
+            container.innerHTML = ''; // Clear previous content
+
+            // A. Intro or End Card
+            if (data.type === 'intro' || data.type === 'end') {
+                const isEnd = data.type === 'end';
+                const action = isEnd ? "location.reload()" : "nextStep()";
+                
+                container.innerHTML = `
+                    <div class="text-center sm:text-left">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">${data.title}</h2>
+                        <div class="text-slate-600 mb-8 leading-relaxed">${data.body}</div>
+                        <button onclick="${action}" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-lg shadow-md transition transform active:scale-95">
+                            ${data.btnText}
+                        </button>
+                    </div>
+                `;
+                if(isEnd) logToBackend("FINAL", "COMPLETED", true, score);
+                return;
+            }
+
+            // B. Quiz Card
+            if (data.type === 'quiz') {
+                // Generate Options HTML
+                let optionsHtml = '';
+                data.options.forEach((opt, idx) => {
+                    optionsHtml += `
+                        <button onclick="checkAnswer(${idx})" id="btn-opt-${idx}" class="quiz-btn w-full text-left p-4 rounded-lg border-2 border-slate-200 hover:border-teal-500 hover:bg-teal-50 transition flex items-center group mb-3">
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-300 mr-4 flex-shrink-0 flex items-center justify-center group-hover:border-teal-500">
+                                <div class="w-3 h-3 rounded-full bg-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                            </div>
+                            <span class="font-medium text-slate-700">${opt.text}</span>
+                        </button>
+                    `;
+                });
+
+                container.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Question ${currentStep} / 20</span>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold text-slate-900 mb-2">${data.question}</h2>
+                    
+                    <div class="img-placeholder">
+                        <svg class="w-10 h-10 mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>${data.imagePlaceholder}</span>
+                    </div>
+
+                    <p class="text-slate-800 text-lg mb-6 font-medium italic border-l-4 border-slate-300 pl-4 py-2 bg-slate-50 rounded-r">
+                        "${data.scenario}"
+                    </p>
+
+                    <div id="options-container">${optionsHtml}</div>
+
+                    <div id="feedback-area" class="hidden mt-6 p-5 rounded-lg border bg-slate-50 animate-pulse-once">
+                        <div id="feedback-content" class="mb-4 text-slate-700"></div>
+                        <button onclick="nextStep()" class="bg-slate-800 text-white px-6 py-2 rounded-lg font-bold hover:bg-slate-900 transition flex items-center">
+                            Next Question <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // 3. Answer Logic
+        function checkAnswer(selectedIndex) {
+            const data = CURRICULUM[currentStep];
+            const isCorrect = data.options[selectedIndex].correct;
+            const container = document.getElementById('options-container');
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackContent = document.getElementById('feedback-content');
+
+            // Lock all buttons
+            const buttons = container.querySelectorAll('.quiz-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-60', 'cursor-not-allowed');
+                btn.classList.remove('hover:border-teal-500', 'hover:bg-teal-50');
+            });
+
+            // Highlight Selected
+            const selectedBtn = document.getElementById(`btn-opt-${selectedIndex}`);
+            selectedBtn.classList.remove('opacity-60', 'border-slate-200');
+            
+            if (isCorrect) {
+                selectedBtn.classList.add('bg-green-100', 'border-green-500', 'text-green-900');
+                feedbackArea.classList.add('bg-green-50', 'border-green-200');
+                feedbackContent.innerHTML = `<div class="font-bold text-green-700 mb-1 flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Correct</div>` + data.explanation;
+                score += 5; // 5 points per question = 100 total
+                document.getElementById('score-display').innerText = score;
+            } else {
+                selectedBtn.classList.add('bg-red-100', 'border-red-500', 'text-red-900');
+                feedbackArea.classList.add('bg-red-50', 'border-red-200');
+                feedbackContent.innerHTML = `<div class="font-bold text-red-700 mb-1 flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Incorrect</div>` + data.explanation;
+            }
+
+            // Show Feedback
+            feedbackArea.classList.remove('hidden', 'animate-pulse-once');
+            
+            // Log to Backend
+            logToBackend(data.id, data.options[selectedIndex].text, isCorrect, score);
+        }
+
+        function nextStep() {
+            currentStep++;
+            renderStep();
+        }
+
+        // 4. Backend Communication
+        function logToBackend(qId, response, isCorrect, currentScore) {
+            if(BACKEND_URL.includes("YOUR_")) return; // Prevent errors if not configured
+            
+            fetch(BACKEND_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: USER_EMAIL,
+                    questionId: qId,
+                    response: response,
+                    isCorrect: isCorrect,
+                    score: currentScore
+                })
+            }).catch(e => console.log("Log error:", e));
+        }
+
+    </script>
+</body>
+</html>
